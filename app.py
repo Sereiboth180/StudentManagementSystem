@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
+from whitenoise import WhiteNoise
 
-app = Flask(__name__)# i use this method to create the main web engine
+app = Flask(__name__)
+
+# Force WhiteNoise to serve static files on Vercel
+app.wsgi_app = WhiteNoise(app.wsgi_app, root="static/", prefix="static/")
 
 
 #let create student class
