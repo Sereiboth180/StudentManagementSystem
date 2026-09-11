@@ -9,7 +9,7 @@
     <div class="container" style="max-width: 500px;">
         <h2>Edit Student Details</h2>
         
-        <form action="/update/{{ student.student_id }}" method="POST" style="display: block;">
+        <form action="/update/{{ student.id }}" method="POST" class="form-vertical">
             <div class="form-group">
                 <label>Student ID (Read-Only):</label>
                 <input type="text" value="{{ student.student_id }}" disabled style="background-color: #eef1f6;">
