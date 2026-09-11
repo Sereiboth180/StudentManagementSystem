@@ -35,8 +35,8 @@ def home():# this home is home page
 
 @app.route("/add",methods = ["POST"])
 def add_student():
-    sid = request.form.get("id")
-    name = request.form.get("name")
+    sid = request.form.get("id","").strip()
+    name = request.form.get("name","").strip()
     age = request.form.get("age")
     mark = request.form.get("mark")
     
@@ -45,6 +45,12 @@ def add_student():
     
     if mark is None or mark == "":
         return "Please enter a valid mark from 0-100"
+    for s in student_list:
+        if s.id.lower()== sid.lower():
+            return f"Error: {sid} already exists"
+        if s.name.lower()== name.lower():
+            return f"Error: Student name{name} already exists"
+        
     
     #i create a new student object and add it to student list above
     grade = calculate_grade(mark)
