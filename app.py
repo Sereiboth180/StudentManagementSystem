@@ -22,7 +22,7 @@ student_list = []
 
 def calculate_grade(mark):
     mark = float(mark)
-    if mark>=80:
+    if mark>=80 and mark<= 100:
         return "A"
     elif mark >= 70:
         return "B"
