@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
-l
+
 
 #let create student class
 
@@ -69,7 +69,7 @@ def search_student():
     for s in student_list:
         if(query in s.name.lower() or
            query == s.grade.lower() or
-           query in s.course.lower
+           query in s.course.lower()
           ):
               matching_student.append(s)
        
@@ -87,10 +87,10 @@ def edit_student_page(student_id):
         if s.id == student_id:
             selected_student = s
             break
-    return render_template("edit.html", students = selected_student)
+    return render_template("edit.html", student = selected_student)
 # i want to update student mark , so first i need student id to go through that student then update his or her mark
 @app.route("/update/<student_id>", methods = ["POST"])
-def update_student_mark(sid):
+def update_student_mark(student_id):
     new_name = request.form.get("name")
     new_mark = request.form.get("mark")
     new_age = request.form.get("age")
