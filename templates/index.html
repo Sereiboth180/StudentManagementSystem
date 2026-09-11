@@ -2,91 +2,102 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Management System</title>
-    <!-- Link external stylesheet from static folder -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h2>🎓 Student Management System</h2>
+        <h1>🎓 Student Management System</h1>
 
-        <!-- ADD STUDENT FORM -->
-        <div class="section">
-            <h3>Add New Student</h3>
-            <form action="/add" method="POST">
-                <input type="text" name="student_id" placeholder="ID (e.g. 101)" required>
-                <input type="text" name="name" placeholder="Name (e.g. Alex)" required>
-                <input type="number" name="age" placeholder="Age" required>
-                
-                <select name="course" required>
-                    <option value="" disabled selected>Select Course</option>
-                    <option value="Software Engineering">Software Engineering</option>
-                    <option value="Business Administration">Business Administration</option>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Data Science">Data Science</option>
-                    <option value="Marketing">Marketing</option>
-                </select>
+        <!-- Add Student Form (Stacked Vertically) -->
+        <div class="section-card">
+            <h2>Add New Student</h2>
+            <form action="/add" method="POST" class="form-vertical">
+                <div class="form-group">
+                    <label>ID</label>
+                    <input type="text" name="id" placeholder="ID (e.g. 101)" required>
+                </div>
 
-                <input type="number" step="0.1" name="mark" placeholder="Mark (0-100)" required>
-                <button type="submit">Add Student</button>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="name" placeholder="Name (e.g. Alex)" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" name="age" placeholder="Age" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Course</label>
+                    <select name="course" required>
+                        <option value="" disabled selected>Select Course</option>
+                        <option value="Software Engineering">Software Engineering</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Data Science">Data Science</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Mark</label>
+                    <input type="number" name="mark" min="0" max="100" placeholder="Mark (0-100)" required>
+                </div>
+
+                <button type="submit" class="btn">Add Student</button>
             </form>
         </div>
 
-        <!-- SEARCH BAR -->
-        <div class="section">
-            <h3>Search Student</h3>
-            <form action="/search" method="GET">
-                <input type="text" name="query" placeholder="Search by Name, Course, or Grade..." value="{{ search_query if search_query }}" required>
-                <button type="submit" style="background-color: #1a237e;">Search</button>
-                <a href="/" class="btn btn-clear">Show All</a>
+        <!-- Search Form (Single Row) -->
+        <div class="section-card">
+            <h2>Search Student</h2>
+            <form action="/search" method="GET" class="form-horizontal">
+                <div class="form-group">
+                    <input type="text" name="query" placeholder="Search by Name, Course, or Grade...">
+                </div>
+                <button type="submit" class="btn">Search</button>
+                <a href="/" class="btn btn-secondary">Show All</a>
             </form>
         </div>
 
-        <!-- STUDENTS TABLE -->
-        <div class="section">
-            <h3>
-                {% if search_query %}
-                    Search Results for "{{ search_query }}"
-                {% else %}
-                    All Registered Students
-                {% endif %}
-            </h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Course / Major</th>
-                        <th>Mark</th>
-                        <th>Grade</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for s in student_list %}
-                    <tr>
-                        <td><strong>{{ s.student_id }}</strong></td>
-                        <td>{{ s.name }}</td>
-                        <td>{{ s.age }}</td>
-                        <td>{{ s.course }}</td>
-                        <td>{{ s.mark }}</td>
-                        <td>
-                            <!-- Grade Badge styling based on letter grade -->
-                            <span class="badge grade-{{ s.grade }}">{{ s.grade }}</span>
-                        </td>
-                        <td>
-                            <a href="/edit/{{ s.student_id }}" class="edit-btn">Edit</a>
-                            <a href="/delete/{{ s.student_id }}" class="delete-btn">Delete</a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="7" style="text-align: center; color: #888;">No students found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- Registered Students Table -->
+        <div class="section-card">
+            <h2>All Registered Students</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NAME</th>
+                            <th>AGE</th>
+                            <th>COURSE / MAJOR</th>
+                            <th>MARK</th>
+                            <th>GRADE</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td><strong>{{ student.id }}</strong></td>
+                            <td>{{ student.name }}</td>
+                            <td>{{ student.age }}</td>
+                            <td>{{ student.course }}</td>
+                            <td>{{ student.mark }}</td>
+                            <td><span class="badge">{{ student.grade }}</span></td>
+                            <td>
+                                <a href="/edit/{{ student.id }}" class="action-link">Edit</a> | 
+                                <a href="/delete/{{ student.id }}" class="action-link delete">Delete</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted);">No students found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </body>
