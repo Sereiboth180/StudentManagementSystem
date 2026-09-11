@@ -1,10 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
-
-# Force WhiteNoise to serve static files on Vercel
-
-
+l
 
 #let create student class
 
