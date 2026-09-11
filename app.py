@@ -9,9 +9,9 @@ app = Flask(__name__)
 #let create student class
 
 class Student:
-    def __init__(self, student_id, name, age,mark, grade, course):
-        self.student_id = student_id
-        self.name = name 
+    def __init__(self, id, name, age,mark, grade, course):
+        self.id = id
+        self.name = name
         self.age = age
         self.mark = mark
         self.grade = grade
@@ -34,11 +34,11 @@ def calculate_grade(mark):
 #i use app route to let python inside Flask
 @app.route("/")
 def home():# this home is home page
-    return render_template("index.html", student_list= student_list)
+    return render_template("index.html", students= student_list)
 
 @app.route("/add",methods = ["POST"])
 def add_student():
-    sid = request.form.get("student_id")
+    sid = request.form.get("id")
     name = request.form.get("name")
     age = request.form.get("age")
     mark = request.form.get("mark")
