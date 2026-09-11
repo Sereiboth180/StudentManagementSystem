@@ -75,19 +75,19 @@ def search_student():
        
     return render_template("index.html", students = matching_student, search_query = query)
 @app.route("/delete/<student_id>")
-def delete_student(sid):
+def delete_student(student_id):
     global student_list
-    student_list= [s for s in student_list if s.id != sid]
+    student_list= [s for s in student_list if s.id != student_id]
     return redirect(url_for("home"))
 #now i want to edit student page
 @app.route("/edit/<student_id>")
 def edit_student_page(student_id):
     selected_student = None
     for s in student_list:
-        if s.id == sid:
+        if s.id == student_id:
             selected_student = s
             break
-    return render_template("edit.html", student = selected_student)
+    return render_template("edit.html", students = selected_student)
 # i want to update student mark , so first i need student id to go through that student then update his or her mark
 @app.route("/update/<student_id>", methods = ["POST"])
 def update_student_mark(sid):
@@ -97,7 +97,7 @@ def update_student_mark(sid):
     new_course = request.form.get("course")
     new_grade = calculate_grade(new_mark)
     for s in student_list:
-        if s.id == sid:
+        if s.id == student_id:
             s.name = new_name
             s.mark = new_mark
             s.age = new_age
