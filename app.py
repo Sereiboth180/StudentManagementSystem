@@ -1,9 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask import send_from_directory
 
-@app.route('/static/style.css')
-def serve_css():
-    return send_from_directory('static', 'style.css')
 app = Flask(__name__)# i use this method to create the main web engine
 
 
