@@ -61,9 +61,13 @@ def search_student():
     # i use for loop to check the person one by one inside the list
     matching_student = []
     for s in student_list:
-        if query in s.name.lower() or query == s.grade.lower():
-            matching_student.append(s)
-    return render_template("index.html", student_list = matching_student, search_query = query)
+        if(query in s.name.lower() or
+           query == s.grade.lower() or
+           query in s.course.lower
+          ):
+              matching_student.append(s)
+       
+    return render_template("index.html", students = matching_student, search_query = query)
 @app.route("/delete/<student_id>")
 def delete_student(student_id):
     global student_list
