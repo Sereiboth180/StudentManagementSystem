@@ -77,14 +77,14 @@ def search_student():
 @app.route("/delete/<student_id>")
 def delete_student(student_id):
     global student_list
-    student_list= [s for s in student_list if s.student_id != student_id]
+    student_list= [s for s in student_list if s.id != sid]
     return redirect(url_for("home"))
 #now i want to edit student page
 @app.route("/edit/<student_id>")
 def edit_student_page(student_id):
     selected_student = None
     for s in student_list:
-        if s.student_id == student_id:
+        if s.id == sid:
             selected_student = s
             break
     return render_template("edit.html", student = selected_student)
