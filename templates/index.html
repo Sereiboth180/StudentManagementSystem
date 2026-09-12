@@ -9,6 +9,17 @@
 <body>
     <div class="container">
         
+        <!-- Flashed Alert Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
         <!-- Top Bar Header -->
         <header>
             <h2>Student Management System</h2>
