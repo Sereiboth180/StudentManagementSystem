@@ -20,7 +20,7 @@
           {% endif %}
         {% endwith %}
 
-        <!-- 1. Header -->
+        <!-- Header -->
         <header class="app-header">
             <div class="header-brand">
                 <h2>Student Management</h2>
@@ -29,7 +29,7 @@
                 <div class="header-user">
                     <span class="role-badge role-{{ role }}">{{ role | capitalize }}</span>
                     <div class="user-avatar">
-                        {{ role[0] | uppercase }}
+                        {{ role[0] | upper }}
                     </div>
                     <a href="{{ url_for('logout') }}" class="btn btn-icon btn-danger" title="Logout">
                         Logout
@@ -71,35 +71,35 @@
         {% endif %}
 
         {% if role == 'admin' %}
-            <!-- 5. Dashboard Statistics Cards -->
+            <!-- Dashboard Statistics Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-info">
                         <span class="stat-label">Total Students</span>
-                        <span class="stat-value">{{ total_students if total_students is defined else (students|length if students else 0) }}</span>
+                        <span class="stat-value">{{ total_students }}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-info">
                         <span class="stat-label">Average Mark</span>
-                        <span class="stat-value">{{ avg_mark if avg_mark is defined else '72.4' }}</span>
+                        <span class="stat-value">{{ avg_mark }}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-info">
                         <span class="stat-label">Highest Grade</span>
-                        <span class="stat-value">A</span>
+                        <span class="stat-value">{{ highest_grade }}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-info">
                         <span class="stat-label">Courses</span>
-                        <span class="stat-value">{{ total_courses if total_courses is defined else '8' }}</span>
+                        <span class="stat-value">{{ total_courses }}</span>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. Data Management (Import / Export Section) -->
+            <!-- Data Management Section -->
             <div class="card data-management-card">
                 <div class="card-header-clean">
                     <h3>Data Management</h3>
@@ -121,7 +121,7 @@
                 </div>
             </div>
 
-            <!-- 3. Add New Student Form -->
+            <!-- Add New Student Form -->
             <div class="card">
                 <div class="card-header-clean">
                     <h3>Add New Student</h3>
@@ -153,12 +153,12 @@
                 </form>
             </div>
 
-            <!-- 4. All Students Section -->
+            <!-- All Students Section -->
             <div class="card">
                 <div class="table-header-bar">
                     <div class="table-title">
                         <h3>All Students</h3>
-                        <span class="count-chip">{{ students|length if students else 0 }} Students</span>
+                        <span class="count-chip">{{ total_students }} Students</span>
                     </div>
                     
                     <form action="{{ url_for('home') }}" method="GET" class="search-filter-form">
@@ -215,7 +215,7 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
+                <!-- Pagination Bar -->
                 {% if pagination and pagination.pages > 1 %}
                 <div class="pagination-bar">
                     <a href="{{ url_for('home', page=pagination.prev_num if pagination.has_prev else 1, query=request.args.get('query', '')) }}" class="btn btn-secondary page-nav {% if not pagination.has_prev %}disabled{% endif %}">Previous</a>
@@ -236,7 +236,7 @@
             </div>
 
         {% elif role == 'student' %}
-            <!-- Student Dashboard View -->
+            <!-- Student Profile View -->
             <div class="card">
                 <h3>My Profile</h3>
                 {% if student %}
