@@ -14,18 +14,22 @@
             <h2>Student Management System</h2>
             <div class="top-actions">
                 {% if role %}
-                    <span>Role: <strong>{{ role }}</strong></span>
-                    <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="font-size: 0.9rem; color: var(--text-muted);">
+                            Role: <strong style="color: var(--primary-color);">{{ role | capitalize }}</strong>
+                        </span>
+                        <a href="{{ url_for('logout') }}" class="btn btn-danger" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">Logout</a>
+                    </div>
                 {% else %}
-                    <!-- Login Form -->
-                    <form action="{{ url_for('login') }}" method="POST" style="display: flex; gap: 0.5rem;">
-                        <select name="role" id="role-select" class="form-input" required>
-                            <option value="student">Student</option>
-                            <option value="admin">Admin</option>
+                    <!-- Enhanced Login Form -->
+                    <form action="{{ url_for('login') }}" method="POST" class="login-form">
+                        <select name="role" id="role-select" class="role-select" required>
+                            <option value="student">🎓 Student</option>
+                            <option value="admin">🔑 Admin</option>
                         </select>
-                        <input type="text" name="username" placeholder="Student ID / Admin" class="form-input" required>
-                        <input type="password" name="password" id="password-input" placeholder="Password (Admin only)" class="form-input">
-                        <button type="submit" class="btn btn-primary">Login</button>
+                        <input type="text" name="username" placeholder="Student ID / Admin" class="login-input" required autocomplete="off">
+                        <input type="password" name="password" id="password-input" placeholder="Password (Admin)" class="login-input">
+                        <button type="submit" class="btn-login">Login</button>
                     </form>
                 {% endif %}
             </div>
@@ -33,11 +37,11 @@
 
         {% if role == 'admin' %}
             <!-- CSV Export / Import Tools -->
-            <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                 <div>
                     <a href="{{ url_for('export_csv') }}" class="btn btn-secondary">Export to CSV</a>
                 </div>
-                <form action="{{ url_for('import_csv') }}" method="POST" enctype="multipart/form-data" style="display: flex; gap: 0.5rem;">
+                <form action="{{ url_for('import_csv') }}" method="POST" enctype="multipart/form-data" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                     <input type="file" name="file" accept=".csv" class="form-input" required>
                     <button type="submit" class="btn btn-primary">Import CSV</button>
                 </form>
@@ -75,7 +79,7 @@
 
             <!-- Search & Student List -->
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
                     <h3>All Students</h3>
                     <form action="{{ url_for('home') }}" method="GET" style="display: flex; gap: 0.5rem;">
                         <input type="text" name="query" placeholder="Search students..." value="{{ request.args.get('query', '') }}" class="form-input">
@@ -112,7 +116,7 @@
                             </tr>
                             {% else %}
                             <tr>
-                                <td colspan="7" style="text-align: center;">No students found.</td>
+                                <td colspan="7" style="text-align: center; color: var(--text-muted);">No students found.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -121,12 +125,12 @@
 
                 <!-- Pagination Links -->
                 {% if pagination and pagination.pages > 1 %}
-                <div class="pagination">
+                <div class="pagination" style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1.5rem;">
                     {% for page_num in pagination.iter_pages() %}
                         {% if page_num %}
-                            <a href="{{ url_for('home', page=page_num, query=request.args.get('query', '')) }}" class="{% if page_num == pagination.page %}active{% endif %}">{{ page_num }}</a>
+                            <a href="{{ url_for('home', page=page_num, query=request.args.get('query', '')) }}" class="btn {% if page_num == pagination.page %}btn-primary{% else %}btn-secondary{% endif %}" style="padding: 0.35rem 0.75rem;">{{ page_num }}</a>
                         {% else %}
-                            <span>...</span>
+                            <span style="padding: 0.35rem 0.5rem;">...</span>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -134,9 +138,9 @@
             </div>
 
         {% elif role == 'student' %}
-            <!-- Student View -->
+            <!-- Student Dashboard View -->
             <div class="card">
-                <h3>My Details</h3>
+                <h3>My Profile</h3>
                 {% if student %}
                 <table style="margin-top: 1rem;">
                     <tr><th>ID</th><td>{{ student.id }}</td></tr>
@@ -147,7 +151,7 @@
                     <tr><th>Course</th><td>{{ student.course }}</td></tr>
                 </table>
                 {% else %}
-                <p>Student record not found.</p>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">Student record not found.</p>
                 {% endif %}
             </div>
 
@@ -155,13 +159,13 @@
             <!-- Guest View -->
             <div class="card" style="text-align: center; padding: 3rem;">
                 <h3>Welcome to the Student Portal</h3>
-                <p style="color: var(--text-muted); margin-top: 0.5rem;">Please log in above using your admin or student credentials to access the system.</p>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">Please log in above using your admin credentials or student ID to access your dashboard.</p>
             </div>
         {% endif %}
 
     </div>
 
-    <!-- Javascript File -->
+    <!-- Optional JS file -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
