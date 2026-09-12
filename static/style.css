@@ -37,6 +37,28 @@ body {
   margin: 0 auto;
 }
 
+/* Alert Banners */
+.alert {
+  padding: 0.85rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  animation: fadeInDown 0.3s ease-out;
+}
+
+.alert-danger {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.alert-warning {
+  background-color: #fffbe0;
+  color: #92400e;
+  border: 1px solid #fef08a;
+}
+
 /* Header Bar */
 header {
   display: flex;
