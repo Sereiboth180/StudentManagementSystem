@@ -37,20 +37,117 @@ body {
   margin: 0 auto;
 }
 
-/* Header & Top Bar */
+/* Modern Header Bar */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
   background: var(--card-bg);
-  padding: 1.25rem 1.5rem;
-  border-radius: 12px;
-  box-shadow: var(--shadow-sm);
+  padding: 1.25rem 1.75rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
   animation: fadeInDown 0.5s ease-out;
 }
 
-/* Card Animation & Hover */
+/* Header Top Accent Line */
+header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd);
+}
+
+header h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+/* Login Container & Form Elements */
+.login-form {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #f1f5f9;
+  padding: 0.35rem 0.5rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-form:focus-within {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Role Selector Styling */
+.role-select {
+  background-color: #ffffff;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.role-select:hover {
+  border-color: #3b82f6;
+}
+
+/* Login Inputs */
+.login-input {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  outline: none;
+  width: 170px;
+  transition: all 0.2s ease;
+}
+
+.login-input:focus {
+  border-color: #3b82f6;
+  width: 185px;
+}
+
+/* Login Button */
+.btn-login {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem 1.1rem;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-login:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.btn-login:active {
+  transform: scale(0.96);
+}
+
+/* Card Section Animation & Hover */
 .card {
   background: var(--card-bg);
   border-radius: 12px;
@@ -67,7 +164,15 @@ header {
   box-shadow: var(--shadow-md);
 }
 
-/* Inputs & Focus Animations */
+/* Form Inputs & Focus */
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+  color: var(--text-muted);
+}
+
 .form-input, select {
   padding: 0.6rem 0.8rem;
   border: 1px solid var(--border-color);
@@ -83,7 +188,7 @@ header {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
-/* Interactive Buttons */
+/* Buttons */
 .btn {
   padding: 0.6rem 1rem;
   border: none;
@@ -129,7 +234,7 @@ header {
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-/* Tables & Smooth Row Highlights */
+/* Table Styling */
 .table-container {
   overflow-x: auto;
 }
