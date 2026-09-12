@@ -1,10 +1,10 @@
 import csv
 from io import StringIO
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session,flash
 from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 #Secret key used to encrypt user login session
-app.secret_key = "my_secret_key"
+app.secret_key = 'super-secret-key-change-this'
 
 
 #let set up the database model
@@ -34,7 +34,6 @@ def calculate_grade(mark):
     else:
         return "F"
 
-#login part
 @app.route('/login', methods=['POST'])
 def login():
     role = request.form.get('role', '').lower().strip()
@@ -42,29 +41,30 @@ def login():
     password = request.form.get('password', '').strip()
 
     if role == 'student':
-        # Check 1: Student selected, but typed "admin" as username
         if username.lower() == 'admin':
-            return "You selected 'Student' role. Please change the role dropdown to 'Admin' to log in as administrator.", 400
+            flash("You selected 'Student' role. Please change the role dropdown to 'Admin' to log in.", "danger")
+            return redirect(url_for('home'))
             
-        # Check 2: Student selected, but entered a password
         if password:
-            return "Students do not need a password. Please clear the password field and log in using only your Student ID.", 400
+            flash("Students do not need a password. Clear the password field and use only your Student ID.", "warning")
+            return redirect(url_for('home'))
 
-        # Verify Student ID in database
         student = Student.query.filter_by(id=username).first()
         if student:
             session['role'] = 'student'
             session['student_id'] = student.id
             return redirect(url_for('home'))
         else:
-            return "Student ID not found.", 404
+            flash("Student ID not found in system.", "danger")
+            return redirect(url_for('home'))
 
     elif role == 'admin':
         if username.lower() == 'admin' and password == '1234':
             session['role'] = 'admin'
             return redirect(url_for('home'))
         else:
-            return "Invalid Admin credentials.", 401
+            flash("Invalid Admin credentials.", "danger")
+            return redirect(url_for('home'))
 
     return redirect(url_for('home'))
 #logout part
