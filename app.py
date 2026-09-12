@@ -35,24 +35,38 @@ def calculate_grade(mark):
         return "F"
 
 #login part
-@app.route("/login", methods = ["POST"])
+@app.route('/login', methods=['POST'])
 def login():
-    role = request.form.get("role")
-    username = request.form.get("username","").strip()
-    password = request.form.get("password", "").strip()
-    #check for admin role
-    if role == "admin" and username =="admin" and password == '1234':
-        session['user_role']= 'admin'
-        session['user_id']= 'admin'
-        return redirect(url_for("home"))
-    #check student login
-    elif role == "student":
-        student = Student.query.get(username)
+    role = request.form.get('role', '').lower().strip()
+    username = request.form.get('username', '').strip()
+    password = request.form.get('password', '').strip()
+
+    if role == 'student':
+        # Check 1: Student selected, but typed "admin" as username
+        if username.lower() == 'admin':
+            return "You selected 'Student' role. Please change the role dropdown to 'Admin' to log in as administrator.", 400
+            
+        # Check 2: Student selected, but entered a password
+        if password:
+            return "Students do not need a password. Please clear the password field and log in using only your Student ID.", 400
+
+        # Verify Student ID in database
+        student = Student.query.filter_by(id=username).first()
         if student:
-            session['user_role']= "student"
-            session['user_id']= student.id
-            return redirect(url_for("home"))
-    return redirect(url_for("home"))
+            session['role'] = 'student'
+            session['student_id'] = student.id
+            return redirect(url_for('home'))
+        else:
+            return "Student ID not found.", 404
+
+    elif role == 'admin':
+        if username.lower() == 'admin' and password == '1234':
+            session['role'] = 'admin'
+            return redirect(url_for('home'))
+        else:
+            return "Invalid Admin credentials.", 401
+
+    return redirect(url_for('home'))
 #logout part
 
 @app.route("/logout")
