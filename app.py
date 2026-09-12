@@ -40,30 +40,31 @@ def login():
     username = request.form.get('username', '').strip()
     password = request.form.get('password', '').strip()
 
-    if role == 'student':
+    if role == 'admin':
+        if username.lower() == 'admin' and password == '1234':
+            session['user_role'] = 'admin'  # Match session key in home()
+            session['user_id'] = 'admin'
+            return redirect(url_for('home'))
+        else:
+            flash("Invalid Admin credentials.", "danger")
+            return redirect(url_for('home'))
+
+    elif role == 'student':
         if username.lower() == 'admin':
             flash("You selected 'Student' role. Please change the role dropdown to 'Admin' to log in.", "danger")
             return redirect(url_for('home'))
             
         if password:
-            flash("Students do not need a password. Clear the password field and use only your Student ID.", "warning")
+            flash("Students do not need a password. Clear the password field and log in using only your Student ID.", "warning")
             return redirect(url_for('home'))
 
-        student = Student.query.filter_by(id=username).first()
+        student = Student.query.get(username)
         if student:
-            session['role'] = 'student'
-            session['student_id'] = student.id
+            session['user_role'] = 'student'  # Match session key in home()
+            session['user_id'] = student.id
             return redirect(url_for('home'))
         else:
-            flash("Student ID not found in system.", "danger")
-            return redirect(url_for('home'))
-
-    elif role == 'admin':
-        if username.lower() == 'admin' and password == '1234':
-            session['role'] = 'admin'
-            return redirect(url_for('home'))
-        else:
-            flash("Invalid Admin credentials.", "danger")
+            flash("Student ID not found.", "danger")
             return redirect(url_for('home'))
 
     return redirect(url_for('home'))
