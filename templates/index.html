@@ -12,28 +12,47 @@
         <!-- Top Bar Header -->
         <header>
             <h2>Student Management System</h2>
-            <div class="top-actions">
-                {% if role %}
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <span style="font-size: 0.9rem; color: var(--text-muted);">
-                            Role: <strong style="color: var(--primary-color);">{{ role | capitalize }}</strong>
-                        </span>
-                        <a href="{{ url_for('logout') }}" class="btn btn-danger" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">Logout</a>
-                    </div>
-                {% else %}
-                    <!-- Enhanced Login Form -->
-                    <form action="{{ url_for('login') }}" method="POST" class="login-form">
-                        <select name="role" id="role-select" class="role-select" required>
+            {% if role %}
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">
+                        Role: <strong style="color: var(--primary-color);">{{ role | capitalize }}</strong>
+                    </span>
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">Logout</a>
+                </div>
+            {% endif %}
+        </header>
+
+        {% if not role %}
+            <!-- Vertical / Row-by-Row Facebook Style Login Card -->
+            <div class="card login-card">
+                <div class="login-header">
+                    <h3>Sign In</h3>
+                    <p>Access your student portal or admin dashboard</p>
+                </div>
+                
+                <form action="{{ url_for('login') }}" method="POST" class="stacked-login-form">
+                    <div class="form-group">
+                        <label for="role-select">Select Role</label>
+                        <select name="role" id="role-select" class="form-input" required>
                             <option value="student">🎓 Student</option>
                             <option value="admin">🔑 Admin</option>
                         </select>
-                        <input type="text" name="username" placeholder="Student ID / Admin" class="login-input" required autocomplete="off">
-                        <input type="password" name="password" id="password-input" placeholder="Password (Admin)" class="login-input">
-                        <button type="submit" class="btn-login">Login</button>
-                    </form>
-                {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username">User ID / Username</label>
+                        <input type="text" id="username" name="username" placeholder="Enter Student ID or Admin" class="form-input" required autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password-input">Password</label>
+                        <input type="password" id="password-input" name="password" placeholder="Admin password only" class="form-input">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                </form>
             </div>
-        </header>
+        {% endif %}
 
         {% if role == 'admin' %}
             <!-- CSV Export / Import Tools -->
@@ -123,7 +142,7 @@
                     </table>
                 </div>
 
-                <!-- Pagination Links -->
+                <!-- Pagination -->
                 {% if pagination and pagination.pages > 1 %}
                 <div class="pagination" style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1.5rem;">
                     {% for page_num in pagination.iter_pages() %}
@@ -154,18 +173,10 @@
                 <p style="color: var(--text-muted); margin-top: 0.5rem;">Student record not found.</p>
                 {% endif %}
             </div>
-
-        {% else %}
-            <!-- Guest View -->
-            <div class="card" style="text-align: center; padding: 3rem;">
-                <h3>Welcome to the Student Portal</h3>
-                <p style="color: var(--text-muted); margin-top: 0.5rem;">Please log in above using your admin credentials or student ID to access your dashboard.</p>
-            </div>
         {% endif %}
 
     </div>
 
-    <!-- Optional JS file -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
