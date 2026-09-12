@@ -1,25 +1,27 @@
 import csv
 from io import StringIO
-from flask import Flask, render_template, request, redirect, url_for, session,flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, Response
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
+
 app = Flask(__name__)
-#Secret key used to encrypt user login session
+# Secret key used to encrypt user login session
 app.secret_key = 'super-secret-key-change-this'
 
-
-#let set up the database model
-
+# Database setup
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
 # Student Class Model
 class Student(db.Model):
-    id =db.Column(db.String(50), primary_key = True)
-    name = db.Column(db.String(100), nullable = False)
-    age = db.Column(db.Integer, nullable = False)
-    mark = db.Column(db.Float, nullable = False)
-    grade = db.Column(db.String(5), nullable = False)
-    course = db.Column(db.String(100), nullable = False)
+    id = db.Column(db.String(50), primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    mark = db.Column(db.Float, nullable=False)
+    grade = db.Column(db.String(5), nullable=False)
+    course = db.Column(db.String(100), nullable=False)
+
 with app.app_context():
     db.create_all()
 
@@ -42,7 +44,7 @@ def login():
 
     if role == 'admin':
         if username.lower() == 'admin' and password == '1234':
-            session['user_role'] = 'admin'  # Match session key in home()
+            session['user_role'] = 'admin'
             session['user_id'] = 'admin'
             return redirect(url_for('home'))
         else:
@@ -60,7 +62,7 @@ def login():
 
         student = Student.query.get(username)
         if student:
-            session['user_role'] = 'student'  # Match session key in home()
+            session['user_role'] = 'student'
             session['user_id'] = student.id
             return redirect(url_for('home'))
         else:
@@ -68,13 +70,11 @@ def login():
             return redirect(url_for('home'))
 
     return redirect(url_for('home'))
-#logout part
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("home"))
-
 
 # Home Route
 @app.route("/")
@@ -85,23 +85,50 @@ def home():
     if role == 'admin':
         query_parameter = request.args.get("query", "").strip()
         db_query = Student.query
+        
         if query_parameter:
             search_pattern = f"%{query_parameter}%"
-            db_query=db_query.filter(
+            db_query = db_query.filter(
                 (Student.name.ilike(search_pattern)) |
                 (Student.grade.ilike(query_parameter)) |
                 (Student.course.ilike(search_pattern)) |
                 (Student.id.ilike(search_pattern))
             )
-        page = request.args.get('page', 1, type = int)
-        pagination = db_query.paginate(page=page, per_page= 10, error_out= False)
+            
+        page = request.args.get('page', 1, type=int)
+        pagination = db_query.paginate(page=page, per_page=10, error_out=False)
         students = pagination.items
-        return render_template("index.html", students = students, role = role, pagination = pagination)
+
+        # Dashboard Statistics Calculation
+        total_students = Student.query.count()
+        
+        # Calculate Average Mark
+        avg_mark_query = db.session.query(func.avg(Student.mark)).scalar()
+        avg_mark = round(avg_mark_query, 1) if avg_mark_query is not None else 0.0
+
+        # Calculate Highest Grade
+        highest_student = Student.query.order_by(Student.mark.desc()).first()
+        highest_grade = highest_student.grade if highest_student else "N/A"
+
+        # Calculate Distinct Courses Count
+        total_courses = db.session.query(func.count(func.distinct(Student.course))).scalar() or 0
+
+        return render_template(
+            "index.html", 
+            students=students, 
+            role=role, 
+            pagination=pagination,
+            total_students=total_students,
+            avg_mark=avg_mark,
+            highest_grade=highest_grade,
+            total_courses=total_courses
+        )
+
     elif role == 'student':
         student = Student.query.get(user_id)
-        return render_template("index.html", student = student, role = role)
-    #i also provide guest view
-    return render_template("index.html", role = None)
+        return render_template("index.html", student=student, role=role)
+        
+    return render_template("index.html", role=None)
 
 # Add Student Route
 @app.route("/add", methods=["POST"])
@@ -117,20 +144,19 @@ def add_student():
     if not mark or not sid or not name:
         return "Please fill out all required fields", 400
 
-    # Duplicate Validation
     if Student.query.get(sid):
         return f"Student with {sid} already exists", 400
     elif Student.query.filter_by(name=name).first():
-        return f"Student name {name} already exists",400
-
+        return f"Student name {name} already exists", 400
 
     grade = calculate_grade(mark)
-    new_student = Student(id = sid, name = name, age = int(age), mark = float(mark), grade = grade, course = course)
+    new_student = Student(id=sid, name=name, age=int(age), mark=float(mark), grade=grade, course=course)
 
     db.session.add(new_student)
     db.session.commit()
 
     return redirect(url_for("home"))
+
 # Export Students to CSV
 @app.route("/export_csv")
 def export_csv():
@@ -141,10 +167,8 @@ def export_csv():
     output = StringIO()
     writer = csv.writer(output)
 
-    # Header
     writer.writerow(['ID', 'Name', 'Age', 'Mark', 'Grade', 'Course'])
 
-    # Data Rows
     for s in students:
         writer.writerow([s.id, s.name, s.age, s.mark, s.grade, s.course])
 
@@ -176,7 +200,6 @@ def import_csv():
         course = row.get("Course", "").strip()
 
         if sid and name and mark and age:
-            # Avoid duplicate primary key
             if not Student.query.get(sid):
                 grade = calculate_grade(mark)
                 new_student = Student(
@@ -191,7 +214,6 @@ def import_csv():
 
     db.session.commit()
     return redirect(url_for("home"))
-
 
 # Delete Student Route
 @app.route("/delete/<student_id>")
@@ -213,16 +235,16 @@ def edit_student_page(student_id):
 
     student = Student.query.get_or_404(student_id)
     return render_template("edit.html", student=student)
-@app.route("/update/<student_id>", methods = ["POST"])
+
+@app.route("/update/<student_id>", methods=["POST"])
 def update_student(student_id):
     if session.get('user_role') != "admin":
         return "Only admin can access", 403
     student = Student.query.get_or_404(student_id)
-    student.name = request.form.get("name","").strip()
+    student.name = request.form.get("name", "").strip()
     student.age = int(request.form.get("age"))
-    student.course = request.form.get("course","").strip()
+    student.course = request.form.get("course", "").strip()
 
-    #update the student mark
     new_mark = float(request.form.get("mark"))
     student.mark = new_mark
     student.grade = calculate_grade(new_mark)
