@@ -238,21 +238,23 @@
                         <p>View your registered details and course grade</p>
                     </div>
                     {% if student %}
-                    <table class="profile-table">
-                        <tr><th>Student ID</th><td><code>{{ student.id }}</code></td></tr>
-                        <tr><th>Full Name</th><td><strong>{{ student.name }}</strong></td></tr>
-                        <tr><th>Age</th><td>{{ student.age }}</td></tr>
-                        <tr><th>Mark</th><td>{{ student.mark }} / 100</td></tr>
-                        <tr>
-                            <th>Grade Status</th>
-                            <td>
-                                <span class="badge grade-{{ student.grade | lower }}">
-                                    Grade {{ student.grade }}
-                                </span>
-                            </td>
-                        </tr>
-                        <tr><th>Enrolled Course</th><td>{{ student.course }}</td></tr>
-                    </table>
+                    <div class="table-container">
+                        <table class="profile-table">
+                            <tr><th>Student ID</th><td><code>{{ student.id }}</code></td></tr>
+                            <tr><th>Full Name</th><td><strong>{{ student.name }}</strong></td></tr>
+                            <tr><th>Age</th><td>{{ student.age }}</td></tr>
+                            <tr><th>Mark</th><td>{{ student.mark }} / 100</td></tr>
+                            <tr>
+                                <th>Grade Status</th>
+                                <td>
+                                    <span class="badge grade-{{ student.grade | lower }}">
+                                        Grade {{ student.grade }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr><th>Enrolled Course</th><td>{{ student.course }}</td></tr>
+                        </table>
+                    </div>
                     {% else %}
                     <p class="empty-table">Student record not found in system.</p>
                     {% endif %}
