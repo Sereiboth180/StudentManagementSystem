@@ -20,245 +20,235 @@
           {% endif %}
         {% endwith %}
 
-        <!-- Header -->
-        <header class="app-header">
-            <div class="header-brand">
-                <h2>Student Management</h2>
+        {% if not role %}
+            <!-- Centered Professional Login View -->
+            <div class="login-wrapper">
+                <div class="card login-card">
+                    <div class="login-header">
+                        <h2>Portal Login</h2>
+                        <p>Sign in to access student records or dashboard</p>
+                    </div>
+                    
+                    <form action="{{ url_for('login') }}" method="POST" class="stacked-login-form">
+                        <div class="form-group">
+                            <label for="role-select">Account Role</label>
+                            <select name="role" id="role-select" class="form-input" required>
+                                <option value="student">Student</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="username">Username / Student ID</label>
+                            <input type="text" id="username" name="username" placeholder="Enter ID or Admin" class="form-input" required autocomplete="off">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password-input">Password</label>
+                            <input type="password" id="password-input" name="password" placeholder="Admin password only" class="form-input">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                    </form>
+                </div>
             </div>
-            {% if role %}
+        {% else %}
+
+            <!-- Top Header (Logged In View) -->
+            <header class="app-header">
+                <div class="header-brand">
+                    <h2>Student Management</h2>
+                </div>
                 <div class="header-user">
                     <span class="role-badge role-{{ role }}">{{ role | capitalize }}</span>
                     <div class="user-avatar">
                         {{ role[0] | upper }}
                     </div>
-                    <a href="{{ url_for('logout') }}" class="btn btn-icon btn-danger" title="Logout">
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger" title="Logout">
                         Logout
                     </a>
                 </div>
-            {% endif %}
-        </header>
+            </header>
 
-        {% if not role %}
-            <!-- Login Card -->
-            <div class="card login-card">
-                <div class="login-header">
-                    <h3>Sign In</h3>
-                    <p>Access your student portal or admin dashboard</p>
-                </div>
-                
-                <form action="{{ url_for('login') }}" method="POST" class="stacked-login-form">
-                    <div class="form-group">
-                        <label for="role-select">Select Role</label>
-                        <select name="role" id="role-select" class="form-input" required>
-                            <option value="student">Student</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="username">User ID / Username</label>
-                        <input type="text" id="username" name="username" placeholder="Enter Student ID or Admin" class="form-input" required autocomplete="off">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password-input">Password</label>
-                        <input type="password" id="password-input" name="password" placeholder="Admin password only" class="form-input">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
-                </form>
-            </div>
-        {% endif %}
-
-        {% if role == 'admin' %}
-            <!-- Dashboard Statistics Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-info">
+            {% if role == 'admin' %}
+                <!-- Dashboard Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
                         <span class="stat-label">Total Students</span>
                         <span class="stat-value">{{ total_students }}</span>
                     </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-info">
+                    <div class="stat-card">
                         <span class="stat-label">Average Mark</span>
                         <span class="stat-value">{{ avg_mark }}</span>
                     </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-info">
+                    <div class="stat-card">
                         <span class="stat-label">Highest Grade</span>
                         <span class="stat-value">{{ highest_grade }}</span>
                     </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <span class="stat-label">Courses</span>
+                    <div class="stat-card">
+                        <span class="stat-label">Total Courses</span>
                         <span class="stat-value">{{ total_courses }}</span>
                     </div>
                 </div>
-            </div>
 
-            <!-- Data Management Section -->
-            <div class="card data-management-card">
-                <div class="card-header-clean">
-                    <h3>Data Management</h3>
-                    <p>Manage your student records via CSV</p>
-                </div>
-                
-                <div class="data-actions-grid">
-                    <div class="export-box">
-                        <a href="{{ url_for('export_csv') }}" class="btn btn-secondary btn-block">
-                            Export CSV
-                        </a>
-                    </div>
-                    <form action="{{ url_for('import_csv') }}" method="POST" enctype="multipart/form-data" class="import-form">
-                        <label class="drop-zone" for="csv-file-input">
-                            <span class="drop-zone-text">Drop your CSV file here or <strong>Choose File</strong></span>
-                            <input type="file" id="csv-file-input" name="file" accept=".csv" class="file-input-hidden" required onchange="this.form.submit()">
-                        </label>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Add New Student Form -->
-            <div class="card">
-                <div class="card-header-clean">
-                    <h3>Add New Student</h3>
-                </div>
-                <form action="{{ url_for('add_student') }}" method="POST" class="add-student-form">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="student-id">Student ID</label>
-                            <input type="text" id="student-id" name="id" class="form-input" placeholder="e.g. ST101" required>
+                <!-- Admin Action Grid: Import/Export + Add Student -->
+                <div class="dashboard-grid">
+                    <!-- Data Management -->
+                    <div class="card">
+                        <div class="card-header-clean">
+                            <h3>Data Import / Export</h3>
+                            <p>Upload or download CSV student lists</p>
                         </div>
-                        <div class="form-group">
-                            <label for="student-name">Name</label>
-                            <input type="text" id="student-name" name="name" class="form-input" placeholder="Full name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="student-age">Age</label>
-                            <input type="number" id="student-age" name="age" class="form-input" placeholder="Age" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="student-mark">Mark</label>
-                            <input type="number" step="0.1" id="student-mark" name="mark" class="form-input" placeholder="0 - 100" required>
-                        </div>
-                        <div class="form-group form-group-full">
-                            <label for="student-course">Course</label>
-                            <input type="text" id="student-course" name="course" class="form-input" placeholder="e.g. Software Engineering" required>
+                        <div class="data-actions">
+                            <a href="{{ url_for('export_csv') }}" class="btn btn-secondary btn-block">
+                                Download CSV Report
+                            </a>
+                            <form action="{{ url_for('import_csv') }}" method="POST" enctype="multipart/form-data" class="import-form">
+                                <label class="drop-zone" for="csv-file-input">
+                                    <span class="drop-zone-text">Click to choose or drop CSV file</span>
+                                    <input type="file" id="csv-file-input" name="file" accept=".csv" class="file-input-hidden" required onchange="this.form.submit()">
+                                </label>
+                            </form>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-submit">Add Student</button>
-                </form>
-            </div>
 
-            <!-- All Students Section -->
-            <div class="card">
-                <div class="table-header-bar">
-                    <div class="table-title">
-                        <h3>All Students</h3>
-                        <span class="count-chip">{{ total_students }} Students</span>
-                    </div>
-                    
-                    <form action="{{ url_for('home') }}" method="GET" class="search-filter-form">
-                        <div class="search-wrapper">
-                            <input type="text" name="query" placeholder="Search students..." value="{{ request.args.get('query', '') }}" class="form-input search-input">
+                    <!-- Add New Student -->
+                    <div class="card">
+                        <div class="card-header-clean">
+                            <h3>Add New Student</h3>
+                            <p>Register a student into the system</p>
                         </div>
-                        <select name="filter" class="form-input filter-select">
-                            <option value="">Filter ▾</option>
-                            <option value="name">Name</option>
-                            <option value="course">Course</option>
-                            <option value="grade">Grade</option>
-                        </select>
-                        <button type="submit" class="btn btn-secondary">Search</button>
-                    </form>
+                        <form action="{{ url_for('add_student') }}" method="POST" class="add-student-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="student-id">Student ID</label>
+                                    <input type="text" id="student-id" name="id" class="form-input" placeholder="ST101" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="student-name">Full Name</label>
+                                    <input type="text" id="student-name" name="name" class="form-input" placeholder="John Doe" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="student-age">Age</label>
+                                    <input type="number" id="student-age" name="age" class="form-input" placeholder="20" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="student-mark">Mark</label>
+                                    <input type="number" step="0.1" id="student-mark" name="mark" class="form-input" placeholder="0 - 100" required>
+                                </div>
+                                <div class="form-group form-group-full">
+                                    <label for="student-course">Course</label>
+                                    <input type="text" id="student-course" name="course" class="form-input" placeholder="Software Engineering" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Add Student Record</button>
+                        </form>
+                    </div>
                 </div>
 
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Age</th>
-                                <th>Mark</th>
-                                <th>Grade</th>
-                                <th>Course</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for student in students %}
-                            <tr>
-                                <td>{{ student.id }}</td>
-                                <td><strong>{{ student.name }}</strong></td>
-                                <td>{{ student.age }}</td>
-                                <td>{{ student.mark }}</td>
-                                <td>
-                                    <span class="badge grade-{{ student.grade | lower }}">
-                                        {{ student.grade }}
-                                    </span>
-                                </td>
-                                <td>{{ student.course }}</td>
-                                <td class="actions-cell">
-                                    <a href="{{ url_for('edit_student_page', student_id=student.id) }}" class="action-btn edit-btn">Edit</a>
-                                    <a href="{{ url_for('delete_student', student_id=student.id) }}" class="action-btn delete-btn">Delete</a>
-                                </td>
-                            </tr>
-                            {% else %}
-                            <tr>
-                                <td colspan="7" class="empty-table">No students found.</td>
-                            </tr>
+                <!-- Main Data Table Card -->
+                <div class="card">
+                    <div class="table-header-bar">
+                        <div class="table-title">
+                            <h3>Student Database</h3>
+                            <span class="count-chip">{{ total_students }} Total</span>
+                        </div>
+                        
+                        <form action="{{ url_for('home') }}" method="GET" class="search-filter-form">
+                            <input type="text" name="query" placeholder="Search by name, ID, or course..." value="{{ request.args.get('query', '') }}" class="form-input search-input">
+                            <button type="submit" class="btn btn-secondary">Search</button>
+                        </form>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Mark</th>
+                                    <th>Grade</th>
+                                    <th>Course</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                <tr>
+                                    <td><code>{{ student.id }}</code></td>
+                                    <td><strong>{{ student.name }}</strong></td>
+                                    <td>{{ student.age }}</td>
+                                    <td>{{ student.mark }}</td>
+                                    <td>
+                                        <span class="badge grade-{{ student.grade | lower }}">
+                                            Grade {{ student.grade }}
+                                        </span>
+                                    </td>
+                                    <td>{{ student.course }}</td>
+                                    <td class="actions-cell">
+                                        <a href="{{ url_for('edit_student_page', student_id=student.id) }}" class="action-btn edit-btn">Edit</a>
+                                        <a href="{{ url_for('delete_student', student_id=student.id) }}" class="action-btn delete-btn">Delete</a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="7" class="empty-table">No student records found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if pagination and pagination.pages > 1 %}
+                    <div class="pagination-bar">
+                        <a href="{{ url_for('home', page=pagination.prev_num if pagination.has_prev else 1, query=request.args.get('query', '')) }}" class="btn btn-secondary page-nav {% if not pagination.has_prev %}disabled{% endif %}">Previous</a>
+                        
+                        <div class="page-numbers">
+                            {% for page_num in pagination.iter_pages() %}
+                                {% if page_num %}
+                                    <a href="{{ url_for('home', page=page_num, query=request.args.get('query', '')) }}" class="page-num {% if page_num == pagination.page %}active{% endif %}">{{ page_num }}</a>
+                                {% else %}
+                                    <span class="page-ellipsis">...</span>
+                                {% endif %}
                             {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination Bar -->
-                {% if pagination and pagination.pages > 1 %}
-                <div class="pagination-bar">
-                    <a href="{{ url_for('home', page=pagination.prev_num if pagination.has_prev else 1, query=request.args.get('query', '')) }}" class="btn btn-secondary page-nav {% if not pagination.has_prev %}disabled{% endif %}">Previous</a>
-                    
-                    <div class="page-numbers">
-                        {% for page_num in pagination.iter_pages() %}
-                            {% if page_num %}
-                                <a href="{{ url_for('home', page=page_num, query=request.args.get('query', '')) }}" class="page-num {% if page_num == pagination.page %}active{% endif %}">{{ page_num }}</a>
-                            {% else %}
-                                <span class="page-ellipsis">...</span>
-                            {% endif %}
-                        {% endfor %}
+                        </div>
+                        
+                        <a href="{{ url_for('home', page=pagination.next_num if pagination.has_next else pagination.pages, query=request.args.get('query', '')) }}" class="btn btn-secondary page-nav {% if not pagination.has_next %}disabled{% endif %}">Next</a>
                     </div>
-                    
-                    <a href="{{ url_for('home', page=pagination.next_num if pagination.has_next else pagination.pages, query=request.args.get('query', '')) }}" class="btn btn-secondary page-nav {% if not pagination.has_next %}disabled{% endif %}">Next</a>
+                    {% endif %}
                 </div>
-                {% endif %}
-            </div>
 
-        {% elif role == 'student' %}
-            <!-- Student Profile View -->
-            <div class="card">
-                <h3>My Profile</h3>
-                {% if student %}
-                <table class="profile-table" style="margin-top: 1rem;">
-                    <tr><th>ID</th><td>{{ student.id }}</td></tr>
-                    <tr><th>Name</th><td>{{ student.name }}</td></tr>
-                    <tr><th>Age</th><td>{{ student.age }}</td></tr>
-                    <tr><th>Mark</th><td>{{ student.mark }}</td></tr>
-                    <tr>
-                        <th>Grade</th>
-                        <td>
-                            <span class="badge grade-{{ student.grade | lower }}">
-                                {{ student.grade }}
-                            </span>
-                        </td>
-                    </tr>
-                    <tr><th>Course</th><td>{{ student.course }}</td></tr>
-                </table>
-                {% else %}
-                <p style="color: var(--text-muted); margin-top: 0.5rem;">Student record not found.</p>
-                {% endif %}
-            </div>
+            {% elif role == 'student' %}
+                <!-- Student Dashboard Profile Card -->
+                <div class="card student-profile-card">
+                    <div class="card-header-clean">
+                        <h3>My Academic Profile</h3>
+                        <p>View your registered details and course grade</p>
+                    </div>
+                    {% if student %}
+                    <table class="profile-table">
+                        <tr><th>Student ID</th><td><code>{{ student.id }}</code></td></tr>
+                        <tr><th>Full Name</th><td><strong>{{ student.name }}</strong></td></tr>
+                        <tr><th>Age</th><td>{{ student.age }}</td></tr>
+                        <tr><th>Mark</th><td>{{ student.mark }} / 100</td></tr>
+                        <tr>
+                            <th>Grade Status</th>
+                            <td>
+                                <span class="badge grade-{{ student.grade | lower }}">
+                                    Grade {{ student.grade }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr><th>Enrolled Course</th><td>{{ student.course }}</td></tr>
+                    </table>
+                    {% else %}
+                    <p class="empty-table">Student record not found in system.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+
         {% endif %}
 
     </div>
