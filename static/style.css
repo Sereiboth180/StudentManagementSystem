@@ -1,26 +1,25 @@
-/* Formal & Professional Color Palette */
+/* Formal Color Palette & Micro-Interactions */
 :root {
     --bg-main: #f4f6f9;          /* Soft light-gray page background */
-    --card-bg: #ffffff;          /* Pure white card backgrounds */
+    --card-bg: #ffffff;          /* Pure white card background */
     --text-primary: #1e293b;     /* Slate dark gray text */
     --text-muted: #64748b;       /* Cool gray secondary text */
     --border-color: #e2e8f0;     /* Light subtle border */
     
-    /* Primary Action Colors */
+    /* Primary Colors */
     --primary-color: #1e40af;    /* Formal Deep Blue */
-    --primary-hover: #1e3a8a;    
-    --secondary-bg: #f8fafc;     /* Input & subtle element fill */
+    --primary-hover: #1d4ed8;    
+    --secondary-bg: #f8fafc;     
+    --secondary-hover: #f1f5f9;  
     
-    /* Status & Action Colors */
-    --danger-color: #dc2626;     /* Muted Formal Red */
+    /* Action & Status Colors */
+    --danger-color: #dc2626;     
     --danger-hover: #b91c1c;
-    --warning-color: #d97706;    /* Amber */
     
-    /* Grade Badges */
-    --grade-a: #15803d;          /* Dark Green */
-    --grade-b: #0369a1;          /* Dark Blue */
-    --grade-c: #b45309;          /* Dark Amber */
-    --grade-f: #b91c1c;          /* Dark Red */
+    /* Transitions */
+    --transition-fast: all 0.2s ease-in-out;
+    --box-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --box-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* Global Reset */
@@ -52,42 +51,26 @@ body {
     padding: 1rem 1.5rem;
     border-radius: 6px;
     border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow-subtle);
     margin-bottom: 1.5rem;
 }
 
-.header-brand h2 {
-    font-size: 1.25rem;
-    color: var(--text-primary);
-}
-
-.header-user {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.user-avatar {
-    width: 36px;
-    height: 36px;
-    background-color: var(--primary-color);
-    color: #ffffff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-
-/* Cards */
+/* Cards with Hover Lift */
 .card {
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
+    box-shadow: var(--box-shadow-subtle);
+    transition: var(--transition-fast);
 }
 
-/* Stats Cards */
+.card:hover {
+    box-shadow: var(--box-shadow-hover);
+}
+
+/* Dashboard Interactive Stats Cards */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -100,6 +83,15 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 1rem 1.25rem;
+    box-shadow: var(--box-shadow-subtle);
+    transition: var(--transition-fast);
+    cursor: default;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-hover);
+    border-color: #cbd5e1;
 }
 
 .stat-label {
@@ -115,7 +107,7 @@ body {
     color: var(--text-primary);
 }
 
-/* Inputs & Buttons */
+/* Interactive Forms & Inputs */
 .form-input {
     width: 100%;
     padding: 0.5rem 0.75rem;
@@ -124,13 +116,20 @@ body {
     border-radius: 4px;
     color: var(--text-primary);
     font-size: 0.9rem;
+    transition: var(--transition-fast);
+}
+
+.form-input:hover {
+    border-color: #cbd5e1;
 }
 
 .form-input:focus {
     outline: none;
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15);
 }
 
+/* Buttons with Tactile Hover & Click States */
 .btn {
     padding: 0.5rem 1rem;
     border-radius: 4px;
@@ -140,6 +139,11 @@ body {
     display: inline-block;
     border: none;
     font-size: 0.9rem;
+    transition: var(--transition-fast);
+}
+
+.btn:active {
+    transform: scale(0.98);
 }
 
 .btn-primary {
@@ -149,6 +153,7 @@ body {
 
 .btn-primary:hover {
     background-color: var(--primary-hover);
+    box-shadow: 0 2px 6px rgba(30, 64, 175, 0.25);
 }
 
 .btn-secondary {
@@ -157,12 +162,22 @@ body {
     border: 1px solid var(--border-color);
 }
 
+.btn-secondary:hover {
+    background-color: var(--secondary-hover);
+    border-color: #cbd5e1;
+}
+
 .btn-danger {
     background-color: var(--danger-color);
     color: #ffffff;
 }
 
-/* Tables */
+.btn-danger:hover {
+    background-color: var(--danger-hover);
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+}
+
+/* Interactive Table Rows & Action Links */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -182,20 +197,41 @@ th {
     font-weight: 600;
 }
 
-tr:hover {
-    background-color: #f8fafc;
+tr {
+    transition: var(--transition-fast);
 }
 
-/* Grade Badges */
-.badge {
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    font-weight: 600;
+tr:hover {
+    background-color: #f1f5f9;
+}
+
+.action-btn {
+    padding: 0.25rem 0.6rem;
     font-size: 0.8rem;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-right: 0.25rem;
+    display: inline-block;
+    transition: var(--transition-fast);
+}
+
+.edit-btn {
+    background-color: var(--secondary-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.edit-btn:hover {
+    background-color: #e2e8f0;
+    color: var(--primary-color);
+}
+
+.delete-btn {
+    background-color: #fee2e2;
+    color: var(--danger-color);
+}
+
+.delete-btn:hover {
+    background-color: var(--danger-color);
     color: #ffffff;
 }
-
-.grade-a { background-color: var(--grade-a); }
-.grade-b { background-color: var(--grade-b); }
-.grade-c { background-color: var(--grade-c); }
-.grade-f { background-color: var(--grade-f); }
