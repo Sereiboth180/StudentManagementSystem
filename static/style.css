@@ -62,7 +62,7 @@ body {
     background-color: var(--bg-main);
     color: var(--text-primary);
     line-height: 1.5;
-    padding: 2rem 1rem;
+    padding: 1.5rem 1rem;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -98,6 +98,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 80vh;
+    padding: 1rem 0;
 }
 
 .login-card {
@@ -146,6 +147,7 @@ body {
     border: 1px solid var(--border-color);
     box-shadow: var(--box-shadow-subtle);
     margin-bottom: 1.5rem;
+    gap: 1rem;
 }
 
 .header-brand h2 {
@@ -156,7 +158,7 @@ body {
 .header-user {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .role-badge {
@@ -189,6 +191,7 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    flex-shrink: 0;
 }
 
 /* --- Cards & Layout Grid --- */
@@ -210,12 +213,6 @@ body {
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: 1.5rem;
-}
-
-@media (max-width: 768px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 .card-header-clean {
@@ -361,6 +358,7 @@ body {
     border: none;
     font-size: 0.9rem;
     transition: var(--transition-fast);
+    white-space: nowrap;
 }
 
 .btn-block {
@@ -443,12 +441,15 @@ body {
 }
 
 .table-container {
+    width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    white-space: nowrap;
 }
 
 th, td {
@@ -548,6 +549,8 @@ code {
     align-items: center;
     justify-content: space-between;
     margin-top: 1.25rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .page-numbers {
@@ -574,4 +577,86 @@ code {
 .page-nav.disabled {
     opacity: 0.5;
     pointer-events: none;
+}
+
+/* --- Tablet & Mobile Responsiveness --- */
+@media (max-width: 768px) {
+    body {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    /* Stack header elements vertically on phone screen */
+    .app-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .header-brand {
+        text-align: center;
+    }
+
+    .header-brand h2 {
+        font-size: 1.2rem;
+    }
+
+    .header-user {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .search-filter-form {
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .pagination-bar {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-table th, 
+    .profile-table td {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+    }
+
+    .actions-cell {
+        display: flex;
+        gap: 0.3rem;
+    }
+
+    .action-btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.75rem;
+    }
 }
